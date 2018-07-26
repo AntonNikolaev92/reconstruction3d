@@ -1,4 +1,4 @@
-%{
+
 clear all; close all;
 path = 'D:\data\cirs';
 % users input
@@ -41,25 +41,48 @@ USGRID.size = [ length(xlin), length(ylin), length(zlin) ];
 % fast reconstruction 
 nl = length(zlin);
 layers = cell(nl);
-zth = vox(3);
+zth = vox(3)/2;
 tic
+[~ , indx] = sort(p(3,:));
+p = p(:,indx);
+ip = 1;
+np = length(p(3,:));
 for il = 1:nl
     il
-    mask = p(3,:) > (zlin(il) - zth) & p(3,:) < (zlin(il) + zth);
-    indx = (1:length(mask)).*mask; indx = indx(indx>0);
-    layers{il}.x = p(1,indx);
-    layers{il}.y = p(2,indx);
-    layers{il}.z = p(3,indx);
-    layers{il}.v = amp(indx);
-    mask = USGRID.z' > (zlin(il) - zth) & USGRID.z' < (zlin(il) + zth);
-    indx = (1:length(mask)).*mask; indx = indx(indx>0);
-    layers{il}.xq = USGRID.x(indx);
-    layers{il}.yq = USGRID.y(indx);
-    layers{il}.zq = USGRID.z(indx);
+    layers{il}.x = [];
+    layers{il}.y = [];
+    layers{il}.z = [];
+    layers{il}.v = [];
+    iz0 = ip;
+    tic
+    while (p(3,ip) < (zlin(il) + zth) ) && (p(3,ip) > ( zlin(il) - zth) )
+        if (ip - iz0) == length(layers{il}.v)
+                layers{il}.x = [ layers{il}.x zeros(1,10000) ];
+                layers{il}.y = [ layers{il}.y zeros(1,10000) ];
+                layers{il}.z = [ layers{il}.z zeros(1,10000) ];
+                layers{il}.v = [ layers{il}.v zeros(1,10000) ];
+        end
+        layers{il}.x(ip-iz0+1) = p(1,ip);
+        layers{il}.y(ip-iz0+1) = p(2,ip);
+        layers{il}.z(ip-iz0+1) = p(3,ip);
+        layers{il}.v(ip-iz0+1) = amp(ip);
+        ip = ip+1;
+        if ip > np, break; end;
+    end
+    layers{il}.x = layers{il}.x(1:(ip-iz0 - 1));
+    layers{il}.y = layers{il}.y(1:(ip-iz0 - 1));
+    layers{il}.z = layers{il}.z(1:(ip-iz0 - 1));
+    layers{il}.v = layers{il}.v(1:(ip-iz0 - 1));
+    length(layers{il}.v)
+    toc
+    layers{il}.xq = USGRID.x;
+    layers{il}.yq = USGRID.y;
+    layers{il}.zq = ones(length(USGRID.x),1).*zlin(il);
 end;
 clear('p'); clear('p0'); clear('USDATA');
 % perform interpolation
 pool = gcp();
+
 
 parfor il = 1:floor(nl)
     F = scatteredInterpolant(layers{il}.x', layers{il}.y', layers{il}.z', layers{il}.v','linear','none');
@@ -70,15 +93,15 @@ USDATA = zeros(length(xlin), length(ylin), length(zlin));
 for il = 1:floor(nl)
     ix = ceil((layers{il}.xq - xmin)/vox(1));
     iy = ceil((layers{il}.yq - ymin)/vox(2));
-    iz = ceil((layers{il}.zq - zmin)/vox(3));
+    ip = ceil((layers{il}.zq - zmin)/vox(3));
     for i = 1:length(ix)
-        if ix(i)>0 & ix(i)<length(xlin) & iy(i)>0 & iy(i)<length(ylin) & iz(i)>0 & iz(i)<length(zlin)
-            USDATA(ix(i), iy(i), iz(i)) =  layers{il}.vq(i);
+        if ix(i)>0 & ix(i)<length(xlin) & iy(i)>0 & iy(i)<length(ylin) & ip(i)>0 & ip(i)<length(zlin)
+            USDATA(ix(i), iy(i), ip(i)) =  layers{il}.vq(i);
         end
     end
 end
 toc
-%}
+
 
 SN=round(rand(1)*1000);
 today=[datestr(now,'yyyy') datestr(now,'mm') datestr(now,'dd')];

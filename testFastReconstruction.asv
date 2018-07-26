@@ -41,27 +41,59 @@ USGRID.size = [ length(xlin), length(ylin), length(zlin) ];
 % fast reconstruction 
 nl = length(zlin);
 layers = cell(nl);
-zth = vox(3);
+zth = vox(3)/2;
 tic
+[~ , indx] = sort(p(3,:));
+p = p(:,indx);
+iz = 1;
 for il = 1:nl
     il
-    mask = p(3,:) > (zlin(il) - zth) & p(3,:) < (zlin(il) + zth);
-    indx = (1:length(mask)).*mask; indx = indx(indx>0);
-    layers{il}.x = p(1,indx);
-    layers{il}.y = p(2,indx);
-    layers{il}.z = p(3,indx);
-    layers{il}.v = amp(indx);
-    mask = USGRID.z' > (zlin(il) - zth) & USGRID.z' < (zlin(il) + zth);
-    indx = (1:length(mask)).*mask; indx = indx(indx>0);
-    layers{il}.xq = USGRID.x(indx);
-    layers{il}.yq = USGRID.y(indx);
-    layers{il}.zq = USGRID.z(indx);
+    layers{il}.x = [];
+    layers{il}.y = [];
+    layers{il}.z = [];
+    layers{il}.v = [];
+    iz0 = iz;
+    tic
+    if iz > length(p(3,:)), break; end;
+    while (p(3,iz) < (zlin(il) + zth) ) && (p(3,iz) > ( zlin(il) - zth) )
+        tic 
+        if (iz - iz0) == length(layers{il}.v)
+                layers{il}.x = [ layers{il}.x zeros(1,10000) ];
+                layers{il}.y = [ layers{il}.y zeros(1,10000) ];
+                layers{il}.z = [ layers{il}.z zeros(1,10000) ];
+                layers{il}.v = [ layers{il}.v zeros(1,10000) ];
+        end
+        toc
+        tic
+        layers{il}.x(iz-iz0+1) = p(1,iz);
+        layers{il}.y(iz-iz0+1) = p(2,iz);
+        layers{il}.z(iz-iz0+1) = p(3,iz);
+        layers{il}.v(iz-iz0+1) = amp(iz);
+        iz = iz+1;
+        toc
+        tic
+        if iz == 89
+            iz;
+        end;
+        if iz > length(p(3,:)), break; end;
+        toc
+    end
+    layers{il}.x = layers{il}.x(1:(iz-iz0 - 1));
+    layers{il}.y = layers{il}.y(1:(iz-iz0 - 1));
+    layers{il}.z = layers{il}.z(1:(iz-iz0 - 1));
+    layers{il}.v = layers{il}.v(1:(iz-iz0 - 1));
+    length(layers{il}.v)
+    toc
+    layers{il}.xq = USGRID.x;
+    layers{il}.yq = USGRID.y;
+    layers{il}.zq = ones(length(USGRID.x),1).*zlin(il);
 end;
 clear('p'); clear('p0'); clear('USDATA');
 % perform interpolation
 pool = gcp();
 
-parfor il = 1:floor(nl)
+
+for il = 1:floor(nl)
     F = scatteredInterpolant(layers{il}.x', layers{il}.y', layers{il}.z', layers{il}.v','linear','none');
     layers{il}.vq = F(layers{il}.xq, layers{il}.yq, layers{il}.zq);
 end
@@ -79,6 +111,7 @@ for il = 1:floor(nl)
 end
 toc
 
+
 SN=round(rand(1)*1000);
 today=[datestr(now,'yyyy') datestr(now,'mm') datestr(now,'dd')];
 info.SeriesNumber=SN;
@@ -95,11 +128,13 @@ info.SliceThickness=vox(3);
 info.PixelSpacing=[vox(1) vox(2)];
 info.SliceLocation=0;
 
-UserInput.savepath = [pathRFData, '\', dicomFilesFolderName, '\'];
-FileName = 'Slice';
-FullFileName=[UserInput.savepath,'\',FileName];
-volscale = [VoxelSz.x VoxelSz.y VoxelSz.z];
-dicom_write_volume(dataConeVolume, FullFileName, volscale, info);
+path = [path,'\','dicom'];
+if exist(path), rmdir(path,'s'); end;
+mkdir(path);
+fname = 'volumeSlice';
+fullfname=[path,'\',fname];
+volscale = [1 1 1];
+dicom_write_volume(USDATA, fullfname, volscale, info);
         
     
     
