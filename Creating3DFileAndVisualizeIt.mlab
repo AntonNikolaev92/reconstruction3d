@@ -1,0 +1,486 @@
+// MDL v1 utf8
+network  {
+  watchlist = ""
+}
+module OrthoView2D {
+  internal  {
+    frame = "1125 253 120 56"
+    moduleGroupName = ""
+    windows  {
+      window _default {
+        geometry = "289 242 891 593"
+        sizeHint = "400 430"
+        wasOpen = no
+      }
+    }
+  }
+  fields  {
+    instanceName = OrthoView2D
+    inventorInputOn = TRUE
+    inventorOutputOn = FALSE
+    synchronizePosition = TRUE
+    layout = LAYOUT_CUBE
+    filterMode = FILTER_LINEAR
+    synchronizeZoom = TRUE
+    synchronizePanning = FALSE
+    useGlobalInputImage = TRUE
+    snapToCenter = FALSE
+    alternCubeLayout = FALSE
+    timePoint = 0
+    useManagedInteraction = FALSE
+    enableSlicing = TRUE
+    borderOn = TRUE
+    borderColor = "0.899999976158142 0.899999976158142 0.899999976158142"
+    grayWidth = 249
+    grayCenter = 124.5
+    annotationOn = TRUE
+    annotationSizeMode = ANNO_SHOW_DETAILED
+    annotationFontSize = ANNO_SIZE_AUTO
+    valueHighPrecision = TRUE
+    annoCoords = Voxel
+    showCurrentPos = TRUE
+    worldPosition = "360 430.063262939453 237.44287109375"
+    coloredMode = FALSE
+    hiResRendering = TRUE
+  }
+}
+module ImageLoad {
+  internal  {
+    frame = "917 525 104 56"
+    moduleGroupName = ""
+    windows  {
+      window _default {
+        geometry = "1116 458 311 357"
+        sizeHint = "311 357"
+        wasOpen = no
+      }
+      window _automatic {
+        geometry = "717 330 500 600"
+        sizeHint = "260 223"
+        wasOpen = no
+      }
+    }
+  }
+  fields  {
+    instanceName = ImageLoad1
+    filename = "D:\\data\\cirs\\dicom\\dicom\\3D\\dicom3D.dcm"
+    autoLoad = TRUE
+    readRaw = FALSE
+    rawX = 1
+    rawY = 1
+    rawZ = 1
+    rawC = 1
+    rawT = 1
+    rawU = 1
+    dataTypeRaw = "unsigned int8"
+    planarConfig = Contiguous
+    byteOrder = LittleEndian
+    dataOffset = 0
+    pageSizeHint = "0 0 0 0 0 0"
+    suppressErrorLog = FALSE
+    dicomIgnoreHalfVoxelShift = FALSE
+    suppressMLImageFormatCheckSumTests = FALSE
+  }
+}
+module ImageSave {
+  internal  {
+    frame = "329 85 96 56"
+    moduleGroupName = ""
+    windows  {
+      window _default {
+        geometry = "767 380 401 502"
+        sizeHint = "401 500"
+        wasOpen = no
+      }
+      window _automatic {
+        geometry = "717 330 500 600"
+        sizeHint = "260 223"
+        wasOpen = no
+      }
+    }
+  }
+  fields  {
+    instanceName = ImageSave
+    taskVerboseLogging = FALSE
+    filename = "D:\\data\\cirs\\dicom\\dicom\\3D\\dicom3D.dcm"
+    format = DICOM
+    comment = ""
+    allowOverwrite = TRUE
+    autoFilename = FALSE
+    sourceName = ""
+    postfix = .result1
+    dicomNameUsed = TRUE
+    dicomMetaHeader = TRUE
+    dicomDerived = TRUE
+    dicomDerivedImageType = "OTHER\\MEVISLAB"
+    dicomDiscardTags = FrameSpecific
+    dicomStoreTimeInfo = None
+    dicomSetWindow = FALSE
+    dicomWindowCenter = 0
+    dicomWindowWidth = 0
+    dicomIgnoreHalfVoxelShift = FALSE
+    tiffCompression = None
+    tiffTileX = 128
+    tiffTileY = 128
+    tiffTileXAuto = TRUE
+    tiffTileYAuto = TRUE
+    saveDicomHeaderOnly = FALSE
+    pngCompression = Default
+    pngInterlaced = FALSE
+    jpegQuality = 75
+    jpegProgressive = FALSE
+  }
+}
+module View3D {
+  internal  {
+    frame = "889 141 144 56"
+    moduleGroupName = ""
+    windows  {
+      window _default {
+        geometry = "293 222 1004 645"
+        sizeHint = "1004 645"
+        wasOpen = no
+      }
+    }
+  }
+  fields  {
+    instanceName = View3D
+    autoViewAll = TRUE
+    inventorInputOn = TRUE
+    inventorOutputOn = FALSE
+    lutType = Ramp
+    currentTimePoint = 0
+    staticSamplingRate = 1
+    quality = 1
+    filterVolumeData = FilterLinear
+    lutEditorColorPoints = "[ 0 0 0 0, 4095 1 1 1 ]"
+    lutEditorAlphaPoints = "[ 0 0, 4095 1 ]"
+    lutEditorRelativeLut = FALSE
+    lutEditorColorInterpolation = InterpolateRGB
+    lutEditorAlphaFactor = 1
+    orientationProjectionType = PERSPECTIVE
+    orientationLocation = LOWER_RIGHT
+    orientationOn = TRUE
+    orientationModel = CUBE
+    greyCenter = 0.509999930858612
+    greyWidth = 0.155000075697899
+    alphaFactor = 1
+    colorFactor = "1 1 1"
+    camType = TRUE
+    camPosition = "-944.497680664062 917.426635742188 183.226013183594"
+    camOrientation = "0.338474303483963 -0.757622539997101 -0.55807101726532 2.25122141838074"
+    initialCameraOrientation = CAMERA_KEEP_AS_IS
+    camFar = 1765.356
+    camNear = 917.73895
+    camFocal = 1341.1246
+    camHeight = 0.78539801
+    decoration = FALSE
+    hiResRendering = FALSE
+    annotations = TRUE
+    background = TRUE
+    mode = Illuminated
+    interactiveQuality = Medium
+  }
+  internalFields  {
+    renderer.gradientQuality = GradientQualityAutomatic
+    renderer.enhancementAlphaMix = 0.25
+    renderer.boundaryEnhancement = FALSE
+    renderer.boundaryEnhancementFactor = 1
+    renderer.boundaryEnhancementExponent = 1
+    renderer.boundaryEnhancementGradientBias = 0
+    renderer.silhouetteEnhancement = FALSE
+    renderer.silhouetteEnhancementExponent = 1
+    renderer.silhouetteEnhancementFactor = 1
+    renderer.toneShading = FALSE
+    renderer.toneShadingWarmColor = "0.67451000213623 0.533333003520966 0.141176000237465"
+    renderer.toneShadingColdColor = "0 0 0.400000005960464"
+    renderer.toneShadingWarmDiffuse = 0.60000002
+    renderer.toneShadingColdDiffuse = 0.2
+    renderer.toneShadingAngle = 45
+    renderer.materialAmbient = 0.60000002
+    renderer.materialDiffuse = 1
+    renderer.materialSpecular = 1
+    renderer.materialSpecularity = 32
+    renderer.light1Enabled = TRUE
+    renderer.light1DiffuseIntensity = 1
+    renderer.light1SpecularIntensity = 1
+    renderer.light1Color = "1 1 1"
+    renderer.light1PolarPhi = 45
+    renderer.light1PolarRho = 0
+    renderer.light2Enabled = FALSE
+    renderer.light2DiffuseIntensity = 1
+    renderer.light2SpecularIntensity = 1
+    renderer.light2Color = "1 1 1"
+    renderer.light2PolarPhi = 0
+    renderer.light2PolarRho = 0
+    renderer.light3Enabled = FALSE
+    renderer.light3DiffuseIntensity = 1
+    renderer.light3SpecularIntensity = 1
+    renderer.light3Color = "1 1 1"
+    renderer.light3PolarPhi = -45
+    renderer.light3PolarRho = 0
+    renderer.sizeOutputX = 517
+    renderer.sizeOutputY = 694
+    renderer.sizeOutputZ = 694
+    renderer.subVolumeStartX = 0
+    renderer.subVolumeStartY = 0
+    renderer.subVolumeStartZ = 0
+    renderer.subVolumeEndX = 517
+    renderer.subVolumeEndY = 694
+    renderer.subVolumeEndZ = 694
+    clip.hideGeometry = FALSE
+    clip.on = FALSE
+    clip.left = FALSE
+    clip.right = FALSE
+    clip.top = FALSE
+    clip.bottom = FALSE
+    clip.rear = FALSE
+    clip.front = FALSE
+    clip.translation0 = "1 0 0"
+    clip.translation1 = "-1 0 0"
+    clip.translation2 = "0 1 0"
+    clip.translation3 = "0 -1 0"
+    clip.translation4 = "0 0 1"
+    clip.translation5 = "0 0 -1"
+    clip.rotation0 = "0 0 0.999999940395355 1.57079994678497"
+    clip.rotation1 = "0 0 -0.999999940395355 1.57079994678497"
+    clip.rotation2 = "0 0 -1 3.1415901184082"
+    clip.rotation3 = "0 0 1 0"
+    clip.rotation4 = "-0.999999940395355 0 0 1.57079994678497"
+    clip.rotation5 = "0.999999940395355 0 0 1.57079994678497"
+  }
+}
+module ConcatenateImages {
+  internal  {
+    frame = "713 445 144 56"
+    moduleGroupName = ""
+    windows  {
+      window _default {
+        geometry = "460 678 201 121"
+        sizeHint = "197 121"
+        wasOpen = no
+      }
+      window _automatic {
+        geometry = "717 330 500 600"
+        sizeHint = "260 228"
+        wasOpen = no
+      }
+    }
+  }
+  fields  {
+    instanceName = ConcatenateImages
+    numberOfInputs = 2
+    dimension = z
+    offset = "0 0 0 0 0 0"
+    adjustCDimInfos = FALSE
+  }
+}
+module MemoryCache {
+  internal  {
+    frame = "717 245 120 56"
+    moduleGroupName = ""
+    windows  {
+      window _default {
+        geometry = "817 585 301 91"
+        sizeHint = "301 91"
+        wasOpen = no
+      }
+    }
+  }
+  fields  {
+    instanceName = MemoryCache1
+    updateMode = Off
+  }
+}
+module MemoryCache {
+  internal  {
+    frame = "713 357 112 56"
+    moduleGroupName = ""
+    windows  {
+      window _automatic {
+        geometry = "126 335 500 600"
+        sizeHint = "260 223"
+        wasOpen = no
+      }
+      window _default {
+        geometry = "817 585 301 91"
+        sizeHint = "301 91"
+        wasOpen = no
+      }
+    }
+  }
+  fields  {
+    instanceName = MemoryCache
+    updateMode = Off
+  }
+}
+module RunPythonScript {
+  internal  {
+    frame = "89 397 128 56"
+    moduleGroupName = ""
+    windows  {
+      window _default {
+        geometry = "533 292 1032 699"
+        sizeHint = "629 300"
+        wasOpen = yes
+      }
+    }
+  }
+  fields  {
+    instanceName = RunPythonScript
+    in0 = ""
+    in1 = ""
+    in2 = ""
+    in3 = ""
+    in4 = ""
+    in5 = ""
+    in6 = ""
+    in7 = ""
+    in8 = ""
+    in9 = ""
+    inComment0 = in0
+    inComment1 = in1
+    inComment2 = in2
+    inComment3 = in3
+    inComment4 = in4
+    inComment5 = in5
+    inComment6 = in6
+    inComment7 = in7
+    inComment8 = in8
+    inComment9 = in9
+    autoApply0 = TRUE
+    autoApply1 = TRUE
+    autoApply2 = TRUE
+    autoApply3 = TRUE
+    autoApply4 = TRUE
+    autoApply5 = TRUE
+    autoApply6 = TRUE
+    autoApply7 = TRUE
+    autoApply8 = TRUE
+    autoApply9 = TRUE
+    out0 = ""
+    out1 = ""
+    out2 = ""
+    out3 = ""
+    out4 = ""
+    out5 = ""
+    out6 = ""
+    out7 = ""
+    out8 = ""
+    out9 = ""
+    outComment0 = out0
+    outComment1 = out1
+    outComment2 = out2
+    outComment3 = out3
+    outComment4 = out4
+    outComment5 = out5
+    outComment6 = out6
+    outComment7 = out7
+    outComment8 = out8
+    outComment9 = out9
+    initCode = "# Initialize global variables and functions
+global CTX
+# Use this to access the network context
+CTX=RunPythonScript_ctx.owner().owner()"
+    wakeUpCode = ""
+    code = "*import os
+
+# User input
+directory="D:\\\\data\\\\cirs\\\\dicom\\\\dicom"
+fileFormatName=".dcm"
+saveDirectory="3D"
+
+# Get files from directory
+fileNames=os.listdir(directory)
+
+# Check if 3D direcotry exsist
+if not os.path.isdir(directory+os.sep+saveDirectory):
+	os.makedirs(directory+os.sep+saveDirectory)
+
+# Check if 3D data file exsists
+if not os.path.exists(directory+os.sep+saveDirectory+os.sep+directory.split(os.sep)[-1]+saveDirectory+".dcm"):
+	# Clear memory
+	CTX.field("MemoryCache.clear").touch()
+	CTX.field("MemoryCache1.clear").touch()
+	
+	# Load all files from directory with the fileFormatName extention
+	for imageNumber in range(len(fileNames)):
+		print imageNumber+1,len(fileNames)
+		if fileNames[imageNumber].endswith(fileFormatName):
+			CTX.field("ImageLoad.filename").value=directory+os.sep+fileNames[imageNumber]
+			if imageNumber==0:
+				CTX.field("MemoryCache.input0").connectFrom(CTX.field("ImageLoad.output0"))
+				CTX.field("MemoryCache.update").touch()
+				CTX.field("MemoryCache1.update").touch()
+				CTX.field("MemoryCache.input0").connectFrom(CTX.field("ConcatenateImages.output0"))
+			else:
+				CTX.field("MemoryCache.update").touch()
+				CTX.field("MemoryCache1.update").touch()	
+	
+	print "saving file"
+	# Save the 3D file
+	CTX.field("ImageSave.filename").value=directory+os.sep+saveDirectory+os.sep+directory.split(os.sep)[-1]+saveDirectory+".dcm"
+	CTX.field("ImageSave.save").touch()
+
+	# Clear memory
+	CTX.field("MemoryCache.clear").touch()
+	CTX.field("MemoryCache1.clear").touch()
+
+# Load 3D file
+print "Loading 3D data"
+CTX.field("ImageLoad1.filename").value=directory+os.sep+saveDirectory+os.sep+directory.split(os.sep)[-1]+saveDirectory+".dcm"*"
+    showFields = FALSE
+    showInitCode = FALSE
+    showWakeUpCode = FALSE
+    showCode = TRUE
+    showConsole = FALSE
+  }
+}
+module ImageLoad {
+  internal  {
+    frame = "745 573 96 56"
+    moduleGroupName = ""
+    windows  {
+      window _default {
+        geometry = "927 457 474 357"
+        sizeHint = "474 357"
+        wasOpen = no
+      }
+      window _automatic {
+        geometry = "717 330 500 600"
+        sizeHint = "260 223"
+        wasOpen = no
+      }
+    }
+  }
+  fields  {
+    instanceName = ImageLoad
+    filename = "D:\\data\\cirs\\dicom\\dicom\\volumeSlice0000694.dcm"
+    autoLoad = TRUE
+    readRaw = FALSE
+    rawX = 1
+    rawY = 1
+    rawZ = 1
+    rawC = 1
+    rawT = 1
+    rawU = 1
+    dataTypeRaw = "unsigned int8"
+    planarConfig = Contiguous
+    byteOrder = LittleEndian
+    dataOffset = 0
+    pageSizeHint = "0 0 0 0 0 0"
+    suppressErrorLog = FALSE
+    dicomIgnoreHalfVoxelShift = FALSE
+    suppressMLImageFormatCheckSumTests = FALSE
+  }
+}
+connections  {
+  OrthoView2D.image = ImageLoad1.output0
+  ImageSave.input0 = MemoryCache1.output0
+  View3D.inImage = ImageLoad1.output0
+  ConcatenateImages.input0 = MemoryCache1.output0
+  ConcatenateImages.input1 = ImageLoad.output0
+  MemoryCache1.input0 = MemoryCache.output0
+  MemoryCache.input0 = ConcatenateImages.output0
+}
+networkModel = ""
