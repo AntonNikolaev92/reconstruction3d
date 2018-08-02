@@ -8,6 +8,9 @@ if ~issorted(p(3,:))
     p = p(:,indx);
     amp = amp(indx);
 end
+vox(1) = qxlin(2) - qxlin(1);
+vox(2) = qylin(2) - qylin(1);
+vox(3) = qzlin(2) - qzlin(1);
 
 [X, Y, Z] = meshgrid(qxlin, qylin, qzlin);
 USGRID.x = X(:); USGRID.y = Y(:); USGRID.z = Z(:);
@@ -38,10 +41,10 @@ for il = 1:nl
     tic
     while (p(3,ip) < (qzlin(il) + zth) ) && (p(3,ip) > ( qzlin(il) - zth) )
         if (ip - ip0) == length(layers{il}.v)
-                layers{il}.x = [ layers{il}.x zeros(1,10000) ];
-                layers{il}.y = [ layers{il}.y zeros(1,10000) ];
-                layers{il}.z = [ layers{il}.z zeros(1,10000) ];
-                layers{il}.v = [ layers{il}.v zeros(1,10000) ];
+            layers{il}.x = [ layers{il}.x zeros(1,10000) ];
+            layers{il}.y = [ layers{il}.y zeros(1,10000) ];
+            layers{il}.z = [ layers{il}.z zeros(1,10000) ];
+            layers{il}.v = [ layers{il}.v zeros(1,10000) ];
         end
         layers{il}.x(ip-ip0+1) = p(1,ip);
         layers{il}.y(ip-ip0+1) = p(2,ip);
@@ -59,7 +62,7 @@ for il = 1:nl
     layers{il}.xq = USGRID.x;
     layers{il}.yq = USGRID.y;
     layers{il}.zq = ones(length(USGRID.x),1).*qzlin(il);
-end;
+end
 
 % perform interpolation
 parfor il = 1:nl
@@ -69,6 +72,21 @@ end
 
 nxqlin = length(qxlin); nyqlin = length(qylin); nzqlin = length(qzlin);
 USDATA = zeros(nxqlin, nyqlin, nzqlin);
-for il = 1:nl
-    USDATA(:,:,il) = reshape(layers{il}.vq, nxqlin, nyqlin);
+%for il = 1:nl
+%    USDATA(:,:,il) = reshape(layers{il}.vq, nxqlin, nyqlin);
+%end
+
+for il = 1:floor(nl)
+    ix = ceil((layers{il}.xq - qxlin(1))/vox(1));
+    iy = ceil((layers{il}.yq - qylin(1))/vox(2));
+    iz = ceil((layers{il}.zq - qzlin(1))/vox(3));
+    ip = ceil((layers{il}.zq - qzlin(1))/vox(3));
+    for i = 1:length(ix)
+        if ix(i)>0 & ix(i)<length(qxlin) & iy(i)>0 & iy(i)<length(qylin) & iz(i)>0 & iz(i)<length(qzlin)
+            USDATA(ix(i), iy(i), iz(i)) =  layers{il}.vq(i);
+            if ix(i)>0 & ix(i)<length(qxlin) & iy(i)>0 & iy(i)<length(qylin) & ip(i)>0 & ip(i)<length(qzlin)
+                USDATA(ix(i), iy(i), ip(i)) =  layers{il}.vq(i);
+            end
+        end
+    end
 end
