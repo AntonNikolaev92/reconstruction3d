@@ -1,8 +1,9 @@
 
 clear all; close all;
 path = 'D:\data\cirs';
+addpath(genpath('D:\nav\libs\matlab'));
 % users input
-vox = [1,1,1]; % voxel size
+vox = [0.5,0.5,0.5]; % voxel size
 % load all data here
 H = []; % transformation metrixes
 USDATA = []; 
@@ -39,40 +40,47 @@ USGRID.size = [ length(xlin), length(ylin), length(zlin) ];
 % use statistical correction
 
 % fast reconstruction 
-nl = length(zlin);
-layers = cell(nl);
-zth = vox(3)/2;
+nl = floor(length(zlin));
+layers = cell(nl,1);
+zth = vox(3);
 tic
+ns = p;
 [~ , indx] = sort(p(3,:));
 p = p(:,indx);
+amp = amp(indx);
 ip = 1;
 np = length(p(3,:));
 for il = 1:nl
     il
+    while p(3,ip) > ( zlin(il) - zth)
+        ip = ip - 1;
+        if ip == 0, ip = 1; break; end;
+    end
+    if ip < np, ip = ip + 1; end;
     layers{il}.x = [];
     layers{il}.y = [];
     layers{il}.z = [];
     layers{il}.v = [];
-    iz0 = ip;
+    ip0 = ip;
     tic
     while (p(3,ip) < (zlin(il) + zth) ) && (p(3,ip) > ( zlin(il) - zth) )
-        if (ip - iz0) == length(layers{il}.v)
+        if (ip - ip0) == length(layers{il}.v)
                 layers{il}.x = [ layers{il}.x zeros(1,10000) ];
                 layers{il}.y = [ layers{il}.y zeros(1,10000) ];
                 layers{il}.z = [ layers{il}.z zeros(1,10000) ];
                 layers{il}.v = [ layers{il}.v zeros(1,10000) ];
         end
-        layers{il}.x(ip-iz0+1) = p(1,ip);
-        layers{il}.y(ip-iz0+1) = p(2,ip);
-        layers{il}.z(ip-iz0+1) = p(3,ip);
-        layers{il}.v(ip-iz0+1) = amp(ip);
+        layers{il}.x(ip-ip0+1) = p(1,ip);
+        layers{il}.y(ip-ip0+1) = p(2,ip);
+        layers{il}.z(ip-ip0+1) = p(3,ip);
+        layers{il}.v(ip-ip0+1) = amp(ip);
         ip = ip+1;
         if ip > np, break; end;
     end
-    layers{il}.x = layers{il}.x(1:(ip-iz0 - 1));
-    layers{il}.y = layers{il}.y(1:(ip-iz0 - 1));
-    layers{il}.z = layers{il}.z(1:(ip-iz0 - 1));
-    layers{il}.v = layers{il}.v(1:(ip-iz0 - 1));
+    layers{il}.x = layers{il}.x(1:(ip-ip0 - 1));
+    layers{il}.y = layers{il}.y(1:(ip-ip0 - 1));
+    layers{il}.z = layers{il}.z(1:(ip-ip0 - 1));
+    layers{il}.v = layers{il}.v(1:(ip-ip0 - 1));
     length(layers{il}.v)
     toc
     layers{il}.xq = USGRID.x;
@@ -101,7 +109,6 @@ for il = 1:floor(nl)
     end
 end
 toc
-
 
 SN=round(rand(1)*1000);
 today=[datestr(now,'yyyy') datestr(now,'mm') datestr(now,'dd')];

@@ -1,8 +1,9 @@
 
 clear all; close all;
 path = 'D:\data\cirs';
+addpath(genpath('D:\nav\libs\matlab'));
 % users input
-vox = [1,1,1]; % voxel size
+vox = [0.5,0.5,0.5]; % voxel size
 % load all data here
 H = []; % transformation metrixes
 USDATA = []; 
@@ -39,49 +40,47 @@ USGRID.size = [ length(xlin), length(ylin), length(zlin) ];
 % use statistical correction
 
 % fast reconstruction 
-nl = length(zlin);
-layers = cell(nl);
-zth = vox(3)/2;
+nl = floor(length(zlin));
+layers = cell(nl,1);
+zth = vox(3);
 tic
+ns = p;
 [~ , indx] = sort(p(3,:));
 p = p(:,indx);
-iz = 1;
+amp = amp(indx);
+ip = 1;
+np = length(p(3,:));
 for il = 1:nl
     il
+    while p(3,ip) > ( zlin(il) - zth)
+        ip = ip - 1;
+        if ip == 0, ip = 1; break; end;
+    end
+    if ip < np, ip = ip + 1; end;
     layers{il}.x = [];
     layers{il}.y = [];
     layers{il}.z = [];
     layers{il}.v = [];
-    iz0 = iz;
+    ip0 = ip;
     tic
-    if iz > length(p(3,:)), break; end;
-    while (p(3,iz) < (zlin(il) + zth) ) && (p(3,iz) > ( zlin(il) - zth) )
-        tic 
-        if (iz - iz0) == length(layers{il}.v)
+    while (p(3,ip) < (zlin(il) + zth) ) && (p(3,ip) > ( zlin(il) - zth) )
+        if (ip - ip0) == length(layers{il}.v)
                 layers{il}.x = [ layers{il}.x zeros(1,10000) ];
                 layers{il}.y = [ layers{il}.y zeros(1,10000) ];
                 layers{il}.z = [ layers{il}.z zeros(1,10000) ];
                 layers{il}.v = [ layers{il}.v zeros(1,10000) ];
         end
-        toc
-        tic
-        layers{il}.x(iz-iz0+1) = p(1,iz);
-        layers{il}.y(iz-iz0+1) = p(2,iz);
-        layers{il}.z(iz-iz0+1) = p(3,iz);
-        layers{il}.v(iz-iz0+1) = amp(iz);
-        iz = iz+1;
-        toc
-        tic
-        if iz == 89
-            iz;
-        end;
-        if iz > length(p(3,:)), break; end;
-        toc
+        layers{il}.x(ip-ip0+1) = p(1,ip);
+        layers{il}.y(ip-ip0+1) = p(2,ip);
+        layers{il}.z(ip-ip0+1) = p(3,ip);
+        layers{il}.v(ip-ip0+1) = amp(ip);
+        ip = ip+1;
+        if ip > np, break; end;
     end
-    layers{il}.x = layers{il}.x(1:(iz-iz0 - 1));
-    layers{il}.y = layers{il}.y(1:(iz-iz0 - 1));
-    layers{il}.z = layers{il}.z(1:(iz-iz0 - 1));
-    layers{il}.v = layers{il}.v(1:(iz-iz0 - 1));
+    layers{il}.x = layers{il}.x(1:(ip-ip0 - 1));
+    layers{il}.y = layers{il}.y(1:(ip-ip0 - 1));
+    layers{il}.z = layers{il}.z(1:(ip-ip0 - 1));
+    layers{il}.v = layers{il}.v(1:(ip-ip0 - 1));
     length(layers{il}.v)
     toc
     layers{il}.xq = USGRID.x;
@@ -93,7 +92,7 @@ clear('p'); clear('p0'); clear('USDATA');
 pool = gcp();
 
 
-for il = 1:floor(nl)
+parfor il = 1:floor(nl)
     F = scatteredInterpolant(layers{il}.x', layers{il}.y', layers{il}.z', layers{il}.v','linear','none');
     layers{il}.vq = F(layers{il}.xq, layers{il}.yq, layers{il}.zq);
 end
@@ -102,15 +101,14 @@ USDATA = zeros(length(xlin), length(ylin), length(zlin));
 for il = 1:floor(nl)
     ix = ceil((layers{il}.xq - xmin)/vox(1));
     iy = ceil((layers{il}.yq - ymin)/vox(2));
-    iz = ceil((layers{il}.zq - zmin)/vox(3));
+    ip = ceil((layers{il}.zq - zmin)/vox(3));
     for i = 1:length(ix)
-        if ix(i)>0 & ix(i)<length(xlin) & iy(i)>0 & iy(i)<length(ylin) & iz(i)>0 & iz(i)<length(zlin)
-            USDATA(ix(i), iy(i), iz(i)) =  layers{il}.vq(i);
+        if ix(i)>0 & ix(i)<length(xlin) & iy(i)>0 & iy(i)<length(ylin) & ip(i)>0 & ip(i)<length(zlin)
+            USDATA(ix(i), iy(i), ip(i)) =  layers{il}.vq(i);
         end
     end
 end
 toc
-
 
 SN=round(rand(1)*1000);
 today=[datestr(now,'yyyy') datestr(now,'mm') datestr(now,'dd')];
