@@ -3,7 +3,7 @@ clear all; close all;
 path = 'D:\data\cirs';
 addpath(genpath('D:\nav\libs\matlab'));
 % users input
-vox = [0.5,0.5,0.5]; % voxel size
+vox = [ 1, 1, 1]; % voxel size
 
 % load all data here
 [ p, amp ] = createPointsCloud(path);
@@ -20,13 +20,7 @@ USGRID.size = [ length(xlin), length(ylin), length(zlin) ];
 
 % use statistical correction
 
-% fast reconstruction 
-[~ , indx] = sort(p(3,:));
-p = p(:,indx);
-amp = amp(indx);
-USDATA = reconstructAlongZ( p, amp, xlin, ylin, zlin(100:102), vox(3) );
- 
-%{
+% fast reconstruction
 
 SN=round(rand(1)*1000);
 today=[datestr(now,'yyyy') datestr(now,'mm') datestr(now,'dd')];
@@ -49,8 +43,28 @@ if exist(path), rmdir(path,'s'); end;
 mkdir(path);
 fname = 'volumeSlice';
 fullfname=[path,'\',fname];
-volscale = [1 1 1];
-dicom_write_volume(USDATA, fullfname, volscale, info);
-    %}    
+volscale = vox;
+
+[~ , indx] = sort(p(3,:));
+p = p(:,indx);
+amp = amp(indx);
+USDATA = zeros(length(xlin), length(ylin), length(zlin));
+i1 = 1;
+n = length(zlin);
+nsteps = 50;
+while i1 <= n
+    i1
+    tic
+    i2 = i1 + nsteps - 1;
+    if i2 > n, i2 = n; end;
+    if i1 == i2, break, end;
+    
+    USDATA(:,:,i1:i2) = reconstructAlongZ( p, amp, xlin, ylin, zlin(i1:i2), vox(3) );
+    dicom_write_volume(USDATA, fullfname, volscale, info, i1);
+    i1 = i2+1;
+    toc
+end
+
+  
     
     

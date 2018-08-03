@@ -3,7 +3,7 @@ clear all; close all;
 path = 'D:\data\cirs';
 addpath(genpath('D:\nav\libs\matlab'));
 % users input
-vox = [0.5,0.5,0.5]; % voxel size
+vox = [ 2, 2, 2]; % voxel size
 
 % load all data here
 [ p, amp ] = createPointsCloud(path);
@@ -20,14 +20,26 @@ USGRID.size = [ length(xlin), length(ylin), length(zlin) ];
 
 % use statistical correction
 
-% fast reconstruction 
+% fast reconstruction
 [~ , indx] = sort(p(3,:));
 p = p(:,indx);
 amp = amp(indx);
-USDATA = reconstructAlongZ( p, amp, xlin, ylin, zlin(100:120), 4*vox(3) );
- 
-%{
+USDATA = zeros(length(xlin), length(ylin), length(zlin));
+i1 = 1;
+n = floor(length(zlin)/2); n = 15;
+nsteps = 5;
+while i1 <= 1
+    i1
+    tic
+    i2 = i1 + nsteps - 1;
+    if i2 > n, i2 = n; end;
+    %USDATA(:,:,i1:i2) = reconstructAlongZ( p, amp, xlin, ylin, zlin(i1:i2), vox(3) );
+    USDATA = reconstructAlongZ( p, amp, xlin, ylin, zlin(i1:i2), vox(3) );
+    i1 = i2;
+    toc
+end
 
+%{
 SN=round(rand(1)*1000);
 today=[datestr(now,'yyyy') datestr(now,'mm') datestr(now,'dd')];
 info.SeriesNumber=SN;
